@@ -22,10 +22,6 @@ with tab1:
     # Get the data for best-selling products
     best_selling_products, increasing_trend, declining_trend = func.get_best_selling_products(order_items, orders, products)
     
-    st.subheader("Best-Selling Products Per Year")
-    st.dataframe(best_selling_products[['year', 'product_category_name', 'sales_count']])
-    # Plot of the best-selling products every year
-    
     plt.figure(figsize=(10,6))
     plt.bar(best_selling_products['year'], best_selling_products['sales_count'], color='skyblue')
     plt.title('Best-Selling Products Per Year')
@@ -61,12 +57,6 @@ with tab1:
     plt.xticks(rotation=45)
     plt.show()
     st.pyplot(plt)
-
-    st.subheader("Products with Increasing Trend")
-    st.dataframe(increasing_trend.head())
-
-    st.subheader("Products with Declining Trend")
-    st.dataframe(declining_trend.head())
 
 with tab2:
     st.header("Customer Spending Tiers")
