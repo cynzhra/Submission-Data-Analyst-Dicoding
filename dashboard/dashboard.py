@@ -3,6 +3,7 @@ import pandas as pd
 import func  # Import functions from func.py
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.express as px
 
 # Load data
 orders = pd.read_csv('orders_dataset.csv', parse_dates=['order_purchase_timestamp'])
@@ -15,9 +16,35 @@ customers = pd.read_csv('customers_dataset.csv')
 st.title("E-commerce Analytics Dashboard")
 
 # Sidebar for navigation
-tab1, tab2, tab3 = st.tabs(['Best-Selling Products', 'Customer Spending Tiers', 'Top Geographical Location'])
+tab1, tab2, tab3, tab4 = st.tabs(['Home', 'Best-Selling Products', 'Customer Spending Tiers', 'Top Geographical Location'])
 
 with tab1:
+    st.header('RFM Analysis')
+
+    # Merging datasets for RFM
+    merged_data = pd.merge(orders, order_items, on='order_id')
+    merged_data = pd.merge(merged_data, order_payments, on='order_id')
+    merged_data = pd.merge(merged_data, customers, on='customer_id')
+
+    # Calculate RFM metrics
+    rfm_data = merged_data.groupby('customer_unique_id').agg({
+        'order_purchase_timestamp': lambda x: (merged_data['order_purchase_timestamp'].max() - x.max()).days, # Recency
+        'order_id': 'count',  # Frequency
+        'payment_value': 'sum'  # Monetary
+    }).reset_index()
+
+    rfm_data.columns = ['customer_unique_id', 'Recency', 'Frequency', 'Monetary']
+
+    # Display RFM analysis
+    st.write('RFM Analysis Result:', rfm_data.head())
+
+    # Option to visualize Recency, Frequency, and Monetary
+    if st.checkbox("Show RFM Distribution"):
+        fig = px.scatter(rfm_data, x='Recency', y='Monetary', size='Frequency', color='Frequency',
+                        title="RFM Distribution of Customers")
+        st.plotly_chart(fig)
+
+with tab2:
 
     # Get the data for best-selling products
     best_selling_products, increasing_trend, declining_trend = func.get_best_selling_products(order_items, orders, products)
@@ -58,7 +85,7 @@ with tab1:
     plt.show()
     st.pyplot(plt)
 
-with tab2:
+with tab3:
     st.header("Customer Spending Tiers")
 
     # Get spending tiers and summary statistics
@@ -82,7 +109,7 @@ with tab2:
     plt.show()
     st.pyplot(plt)
 
-with tab3:
+with tab4:
     st.header("Top Geographical Locations")
 
     # Get top geographical locations

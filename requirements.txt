@@ -3,3 +3,5 @@ pandas==2.1.1
 matplotlib==3.3.4
 seaborn==0.12.2
 datetime==4.8
+plotly==5.24.1
+streamlit==3.12
