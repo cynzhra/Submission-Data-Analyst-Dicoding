@@ -63,12 +63,6 @@ with tab2:
 
     # Get spending tiers and summary statistics
     customer_spending, spending_summary = func.group_customers_by_spending(order_items, order_payments, orders)
-    
-    st.subheader("Customer Spending Distribution")
-    st.dataframe(customer_spending.head())
-
-    st.subheader("Spending Tier Summary")
-    st.dataframe(spending_summary)
 
     # Visualize spending distribution
     plt.figure(figsize=(8, 6))
@@ -93,9 +87,6 @@ with tab3:
 
     # Get top geographical locations
     top_location = func.get_top_geographical_location(orders, geolocation, customers)
-    
-    st.subheader("Geographical Location with Most Orders")
-    st.dataframe(top_location.head())
 
     # Visualize top locations
     st.subheader("Top Cities by Orders")
